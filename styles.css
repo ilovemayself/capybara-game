@@ -1,0 +1,121 @@
+/* Общие стили для страницы */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #87CEEB; /* Голубой фон */
+    overflow: hidden; /* Чтобы скрыть все, что выходит за рамки экрана */
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Стили для счётчика очков и таймера */
+  #score, #timer {
+    position: fixed;
+    top: 10px;
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+    z-index: 10; /* Чтобы очки и таймер были поверх всех остальных элементов */
+  }
+  
+  #timer {
+    left: 200px;
+  }
+  
+  /* Стиль для капибары */
+  #capybara {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-image: url('images/capybara.png'); /* Путь к изображению капибары */
+    background-size: cover; /* Чтобы изображение заполнило весь блок */
+    border-radius: 50%; /* Круглая форма капибары */
+    z-index: 5; /* Капибара будет поверх фона, но под фруктами */
+  }
+  
+  /* Стиль для яблока */
+  #item {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-size: cover; /* Чтобы изображение заполнило весь блок */
+    border-radius: 50%; /* Круглая форма яблока */
+    z-index: 5; /* Яблоко будет поверх фона, но под капибарой */
+  }
+  
+  /* Стиль для золотого яблока */
+  #golden-item {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-size: cover; /* Чтобы изображение заполнило весь блок */
+    border-radius: 50%; /* Круглая форма золотого яблока */
+    z-index: 5; /* Золотое яблоко будет поверх фона и фруктов */
+  }
+  
+  /* Анимация фона */
+  @keyframes moveBackground {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: -1000px 0;
+    }
+  }
+  
+  body {
+    background: linear-gradient(90deg, #87CEEB 0%, #1e90ff 100%);
+    animation: moveBackground 20s linear infinite;
+  }
+  
+  /* Анимация для яблок */
+  @keyframes moveApple {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes moveGoldenApple {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+  /* Добавим анимации для яблок */
+  #item {
+    animation: moveApple 1.5s ease-in-out infinite;
+  }
+  
+  #golden-item {
+    animation: moveGoldenApple 1.2s ease-in-out infinite;
+  }
+  
+  /* Дополнительные стили для мобильных устройств */
+  @media (max-width: 600px) {
+    #score, #timer {
+      font-size: 16px;
+      top: 5px;
+    }
+  
+    #capybara {
+      width: 80px;
+      height: 80px;
+    }
+  
+    #item, #golden-item {
+      width: 40px;
+      height: 40px;
+    }
+  }
+  
