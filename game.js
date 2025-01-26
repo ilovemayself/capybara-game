@@ -51,7 +51,7 @@ if (isMobile) {
     tiltY = event.gamma; // наклон по оси Y (влево-вправо)
 
     const rect = capybara.getBoundingClientRect();
-    const step = 5;
+    const step = 3;
 
     // Управление по оси X
     if (tiltY > 5 && rect.right < window.innerWidth) {
