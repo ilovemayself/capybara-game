@@ -1,10 +1,8 @@
-/* Общие стили */
 body {
   margin: 0;
   overflow: hidden;
   font-family: Arial, sans-serif;
-  background-color: #87ceeb; /* Нежно-голубой фон */
-  touch-action: none; /* Отключаем стандартные действия при свайпе */
+  background-color: #87ceeb;
 }
 
 #capybara {
@@ -16,7 +14,7 @@ body {
   background-repeat: no-repeat;
 }
 
-#item, #golden-item, #bomb {
+#item, #bomb {
   position: absolute;
   width: 50px;
   height: 50px;
@@ -28,10 +26,6 @@ body {
   background-image: url('images/apple.png');
 }
 
-#golden-item {
-  background-image: url('images/golden-apple.png');
-}
-
 #bomb {
   background-image: url('images/bomb.png');
 }
@@ -39,7 +33,6 @@ body {
 #score, #timer {
   position: fixed;
   top: 10px;
-  left: 10px;
   font-size: 20px;
   color: white;
   text-shadow: 1px 1px 5px black;
@@ -47,7 +40,6 @@ body {
 }
 
 #timer {
-  left: auto;
   right: 10px;
 }
 
@@ -57,28 +49,15 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   color: white;
   padding: 20px;
   border-radius: 10px;
-  display: none;
-  z-index: 10000;
-}
-
-#game-over-screen h1 {
-  margin: 0 0 10px 0;
 }
 
 #restart-button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #f77;
-  border: none;
-  border-radius: 5px;
-  color: white;
+  margin-top: 10px;
   cursor: pointer;
-}
-
-#restart-button:hover {
-  background-color: #d66;
 }
