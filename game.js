@@ -14,7 +14,14 @@ const themeMusic = document.getElementById('theme-music');
 let score = 0;
 let time = 60;
 let bombInterval = 10000; // Интервал появления бомб
+let capybaraSpeed = 2; // Скорость движения для наклонов телефона
 let gameTimer, bombTimer, currentApple = null;
+let capybaraX = window.innerWidth / 2;
+let capybaraY = window.innerHeight / 2;
+
+// Установка начальной позиции капибары
+capybara.style.left = `${capybaraX}px`;
+capybara.style.top = `${capybaraY}px`;
 
 // Таймер игры
 function startTimer() {
@@ -89,27 +96,38 @@ function endGame() {
   gameOverScreen.style.display = 'block';
 }
 
-// Управление капибарой на стрелках
-let capybaraSpeed = 10;
+// Управление капибарой с помощью клавиш
 window.addEventListener('keydown', (e) => {
-  const capyStyle = getComputedStyle(capybara);
-  const capyLeft = parseInt(capyStyle.left);
-  const capyTop = parseInt(capyStyle.top);
+  const step = 15;
 
-  if (e.key === 'ArrowUp' && capyTop > 0) {
-    capybara.style.top = `${capyTop - capybaraSpeed}px`;
-  }
-  if (e.key === 'ArrowDown' && capyTop < window.innerHeight - 60) {
-    capybara.style.top = `${capyTop + capybaraSpeed}px`;
-  }
-  if (e.key === 'ArrowLeft' && capyLeft > 0) {
-    capybara.style.left = `${capyLeft - capybaraSpeed}px`;
-  }
-  if (e.key === 'ArrowRight' && capyLeft < window.innerWidth - 60) {
-    capybara.style.left = `${capyLeft + capybaraSpeed}px`;
-  }
+  if (e.key === 'ArrowUp') capybaraY = Math.max(0, capybaraY - step);
+  if (e.key === 'ArrowDown') capybaraY = Math.min(window.innerHeight - 60, capybaraY + step);
+  if (e.key === 'ArrowLeft') capybaraX = Math.max(0, capybaraX - step);
+  if (e.key === 'ArrowRight') capybaraX = Math.min(window.innerWidth - 60, capybaraX + step);
+
+  capybara.style.left = `${capybaraX}px`;
+  capybara.style.top = `${capybaraY}px`;
 
   checkCollision();
+});
+
+// Управление капибарой с помощью наклонов телефона
+window.addEventListener('deviceorientation', (e) => {
+  const x = e.gamma; // Наклон влево/вправо
+  const y = e.beta; // Наклон вперёд/назад
+
+  if (x !== null && y !== null) {
+    capybaraX += x * capybaraSpeed;
+    capybaraY += y * capybaraSpeed;
+
+    capybaraX = Math.max(0, Math.min(window.innerWidth - 60, capybaraX));
+    capybaraY = Math.max(0, Math.min(window.innerHeight - 60, capybaraY));
+
+    capybara.style.left = `${capybaraX}px`;
+    capybara.style.top = `${capybaraY}px`;
+
+    checkCollision();
+  }
 });
 
 // Запуск игры
