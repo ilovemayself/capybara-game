@@ -10,15 +10,14 @@
   <div id="capybara"></div>
   <div id="score">Score: 0</div>
   <div id="timer">Time: 60s</div>
-  <audio id="catch-sound" src="sounds/catch.mp3"></audio>
-  <audio id="golden-sound" src="sounds/golden.mp3"></audio>
-  <audio id="game-over-sound" src="sounds/game-over.mp3"></audio>
-  <audio id="theme-music" src="sounds/theme.mp3" loop></audio>
-  <div id="game-over-screen" class="hidden">
-    <h1>Game Over</h1>
-    <p>Your final score: <span id="final-score">0</span></p>
+  <div id="game-over-screen" style="display: none;">
+    <p>Game Over!</p>
+    <p id="final-score">Score: 0</p>
     <button id="restart-button">Restart</button>
   </div>
+  <audio id="catch-sound" src="sounds/catch.mp3"></audio>
+  <audio id="game-over-sound" src="sounds/game-over.mp3"></audio>
+  <audio id="theme-music" src="sounds/theme.mp3" loop></audio>
   <script src="game.js"></script>
 </body>
 </html>
