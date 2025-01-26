@@ -1,121 +1,182 @@
-/* Общие стили для страницы */
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #87CEEB; /* Голубой фон */
-    overflow: hidden; /* Чтобы скрыть все, что выходит за рамки экрана */
-    font-family: Arial, sans-serif;
+// Элементы
+const capybara = document.getElementById('capybara');
+const scoreDisplay = document.getElementById('score');
+const timerDisplay = document.getElementById('timer');
+
+// Звуки
+const catchSound = document.getElementById('catch-sound');
+const goldenSound = document.getElementById('golden-sound');
+const gameOverSound = document.getElementById('game-over-sound');
+const themeMusic = document.getElementById('theme-music');
+
+let score = 0;
+let time = 60;
+let currentApple = null;
+let bombs = [];
+let bombInterval = 10000;
+let bombCreationTimer;
+
+// Включение музыки
+function startMusic() {
+  themeMusic.volume = 0.5;
+  themeMusic.play().catch(err => console.error('Audio playback blocked:', err));
+}
+
+// Таймер
+const timer = setInterval(() => {
+  if (time > 0) {
+    time--;
+    timerDisplay.textContent = `Time: ${time}s`;
+  } else {
+    clearInterval(timer);
+    clearInterval(bombCreationTimer);
+    endGame();
   }
-  
-  /* Стили для счётчика очков и таймера */
-  #score, #timer {
-    position: fixed;
-    top: 10px;
-    font-size: 20px;
-    color: white;
-    font-weight: bold;
-    z-index: 10; /* Чтобы очки и таймер были поверх всех остальных элементов */
-  }
-  
-  #timer {
-    left: 200px;
-  }
-  
-  /* Стиль для капибары */
-  #capybara {
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    background-image: url('images/capybara.png'); /* Путь к изображению капибары */
-    background-size: cover; /* Чтобы изображение заполнило весь блок */
-    border-radius: 50%; /* Круглая форма капибары */
-    z-index: 5; /* Капибара будет поверх фона, но под фруктами */
-  }
-  
-  /* Стиль для яблока */
-  #item {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    background-size: cover; /* Чтобы изображение заполнило весь блок */
-    border-radius: 50%; /* Круглая форма яблока */
-    z-index: 5; /* Яблоко будет поверх фона, но под капибарой */
-  }
-  
-  /* Стиль для золотого яблока */
-  #golden-item {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    background-size: cover; /* Чтобы изображение заполнило весь блок */
-    border-radius: 50%; /* Круглая форма золотого яблока */
-    z-index: 5; /* Золотое яблоко будет поверх фона и фруктов */
-  }
-  
-  /* Анимация фона */
-  @keyframes moveBackground {
-    0% {
-      background-position: 0 0;
+}, 1000);
+
+// Начальная позиция капибары
+capybara.style.top = '200px';
+capybara.style.left = '200px';
+
+// Проверка, мобильное ли устройство
+const isMobile = window.innerWidth <= 768;
+
+// Управление для мобильных устройств через наклон
+let tiltX = 0;
+let tiltY = 0;
+
+if (isMobile) {
+  window.addEventListener('deviceorientation', (event) => {
+    tiltX = event.beta; // наклон по оси X (вверх-вниз)
+    tiltY = event.gamma; // наклон по оси Y (влево-вправо)
+
+    const rect = capybara.getBoundingClientRect();
+    const step = 15;
+
+    // Управление по оси X
+    if (tiltY > 5 && rect.right < window.innerWidth) {
+      capybara.style.left = `${rect.left + step}px`;
+    } else if (tiltY < -5 && rect.left > 0) {
+      capybara.style.left = `${rect.left - step}px`;
     }
-    100% {
-      background-position: -1000px 0;
+
+    // Управление по оси Y
+    if (tiltX > 5 && rect.bottom < window.innerHeight) {
+      capybara.style.top = `${rect.top + step}px`;
+    } else if (tiltX < -5 && rect.top > 0) {
+      capybara.style.top = `${rect.top - step}px`;
+    }
+
+    checkCollision();
+  });
+} else {
+  // Управление на компьютере через клавиши
+  document.addEventListener('keydown', (e) => {
+    startMusic(); // Включаем музыку
+    const rect = capybara.getBoundingClientRect();
+    const step = 15;
+
+    if (e.key === 'ArrowUp' && rect.top > 0) {
+      capybara.style.top = `${rect.top - step}px`;
+    } else if (e.key === 'ArrowDown' && rect.bottom < window.innerHeight) {
+      capybara.style.top = `${rect.top + step}px`;
+    } else if (e.key === 'ArrowLeft' && rect.left > 0) {
+      capybara.style.left = `${rect.left - step}px`;
+    } else if (e.key === 'ArrowRight' && rect.right < window.innerWidth) {
+      capybara.style.left = `${rect.left + step}px`;
+    }
+
+    checkCollision();
+  });
+}
+
+// Создание яблока
+function createApple() {
+  if (currentApple) return;
+
+  const apple = document.createElement('div');
+  const x = Math.random() * (window.innerWidth - 50);
+  const y = Math.random() * (window.innerHeight - 50);
+
+  const isGolden = Math.random() < 0.3;
+
+  apple.id = isGolden ? 'golden-item' : 'item';
+  apple.style.left = `${x}px`;
+  apple.style.top = `${y}px`;
+  document.body.appendChild(apple);
+  currentApple = apple;
+}
+
+// Создание бомбы
+function createBomb() {
+  const bomb = document.createElement('div');
+  let x, y;
+
+  do {
+    x = Math.random() * (window.innerWidth - 50);
+    y = Math.random() * (window.innerHeight - 50);
+  } while (
+    currentApple &&
+    Math.abs(x - parseFloat(currentApple.style.left)) < 50 &&
+    Math.abs(y - parseFloat(currentApple.style.top)) < 50
+  );
+
+  bomb.id = 'bomb';
+  bomb.style.left = `${x}px`;
+  bomb.style.top = `${y}px`;
+  document.body.appendChild(bomb);
+  bombs.push(bomb);
+}
+
+// Проверка столкновений
+function checkCollision() {
+  const capybaraRect = capybara.getBoundingClientRect();
+
+  if (currentApple) {
+    const appleRect = currentApple.getBoundingClientRect();
+    if (
+      capybaraRect.left < appleRect.right &&
+      capybaraRect.right > appleRect.left &&
+      capybaraRect.top < appleRect.bottom &&
+      capybaraRect.bottom > appleRect.top
+    ) {
+      score += currentApple.id === 'golden-item' ? 5 : 1;
+      scoreDisplay.textContent = `Score: ${score}`;
+      (currentApple.id === 'golden-item' ? goldenSound : catchSound).play();
+      currentApple.remove();
+      currentApple = null;
+      createApple();
     }
   }
-  
-  body {
-    background: linear-gradient(90deg, #87CEEB 0%, #1e90ff 100%);
-    animation: moveBackground 20s linear infinite;
-  }
-  
-  /* Анимация для яблок */
-  @keyframes moveApple {
-    0% {
-      transform: translateY(0);
+
+  bombs.forEach((bomb) => {
+    const bombRect = bomb.getBoundingClientRect();
+    if (
+      capybaraRect.left < bombRect.right &&
+      capybaraRect.right > bombRect.left &&
+      capybaraRect.top < bombRect.bottom &&
+      capybaraRect.bottom > bombRect.top
+    ) {
+      endGame();
     }
-    50% {
-      transform: translateY(-20px);
-    }
-    100% {
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes moveGoldenApple {
-    0% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-15px);
-    }
-    100% {
-      transform: translateY(0);
-    }
-  }
-  
-  /* Добавим анимации для яблок */
-  #item {
-    animation: moveApple 1.5s ease-in-out infinite;
-  }
-  
-  #golden-item {
-    animation: moveGoldenApple 1.2s ease-in-out infinite;
-  }
-  
-  /* Дополнительные стили для мобильных устройств */
-  @media (max-width: 600px) {
-    #score, #timer {
-      font-size: 16px;
-      top: 5px;
-    }
-  
-    #capybara {
-      width: 80px;
-      height: 80px;
-    }
-  
-    #item, #golden-item {
-      width: 40px;
-      height: 40px;
-    }
-  }
-  
+  });
+}
+
+// Увеличение количества бомб
+function increaseBombCount() {
+  createBomb();
+}
+
+// Конец игры
+function endGame() {
+  themeMusic.pause();
+  gameOverSound.play();
+  alert(`Game Over! Your score: ${score}`);
+  window.location.reload();
+}
+
+// Начало игры
+scoreDisplay.textContent = `Score: ${score}`;
+timerDisplay.textContent = `Time: ${time}s`;
+createApple();
+bombCreationTimer = setInterval(increaseBombCount, bombInterval);
