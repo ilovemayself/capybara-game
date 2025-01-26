@@ -51,19 +51,34 @@ body {
   right: 10px;
 }
 
-/* Адаптивные стили для мобильных устройств */
-@media (max-width: 768px) {
-  #score, #timer {
-    font-size: 16px;
-  }
+#game-over-screen {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: none;
+  z-index: 10000;
+}
 
-  #capybara {
-    width: 50px;
-    height: 50px;
-  }
+#game-over-screen h1 {
+  margin: 0 0 10px 0;
+}
 
-  #item, #golden-item, #bomb {
-    width: 40px;
-    height: 40px;
-  }
+#restart-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #f77;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+#restart-button:hover {
+  background-color: #d66;
 }
