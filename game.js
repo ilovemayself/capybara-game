@@ -38,63 +38,57 @@ const timer = setInterval(() => {
 capybara.style.top = '200px';
 capybara.style.left = '200px';
 
-// Управление капибарой (клавиши)
-document.addEventListener('keydown', (e) => {
-  startMusic(); // Включаем музыку
-  const rect = capybara.getBoundingClientRect();
-  const step = 15;
+// Проверка, мобильное ли устройство
+const isMobile = window.innerWidth <= 768;
 
-  if (e.key === 'ArrowUp' && rect.top > 0) {
-    capybara.style.top = `${rect.top - step}px`;
-  } else if (e.key === 'ArrowDown' && rect.bottom < window.innerHeight) {
-    capybara.style.top = `${rect.top + step}px`;
-  } else if (e.key === 'ArrowLeft' && rect.left > 0) {
-    capybara.style.left = `${rect.left - step}px`;
-  } else if (e.key === 'ArrowRight' && rect.right < window.innerWidth) {
-    capybara.style.left = `${rect.left + step}px`;
-  }
+// Управление для мобильных устройств через наклон
+let tiltX = 0;
+let tiltY = 0;
 
-  checkCollision();
-});
+if (isMobile) {
+  window.addEventListener('deviceorientation', (event) => {
+    tiltX = event.beta; // наклон по оси X (вверх-вниз)
+    tiltY = event.gamma; // наклон по оси Y (влево-вправо)
 
-// Управление капибарой (свайпы)
-let touchStartX = 0;
-let touchStartY = 0;
+    const rect = capybara.getBoundingClientRect();
+    const step = 15;
 
-document.addEventListener('touchstart', (e) => {
-  touchStartX = e.touches[0].clientX;
-  touchStartY = e.touches[0].clientY;
-});
-
-document.addEventListener('touchmove', (e) => {
-  const touchEndX = e.touches[0].clientX;
-  const touchEndY = e.touches[0].clientY;
-
-  const diffX = touchEndX - touchStartX;
-  const diffY = touchEndY - touchStartY;
-
-  const rect = capybara.getBoundingClientRect();
-  const step = 15;
-
-  if (Math.abs(diffX) > Math.abs(diffY)) {
-    if (diffX > 0 && rect.right < window.innerWidth) {
+    // Управление по оси X
+    if (tiltY > 5 && rect.right < window.innerWidth) {
       capybara.style.left = `${rect.left + step}px`;
-    } else if (diffX < 0 && rect.left > 0) {
+    } else if (tiltY < -5 && rect.left > 0) {
       capybara.style.left = `${rect.left - step}px`;
     }
-  } else {
-    if (diffY > 0 && rect.bottom < window.innerHeight) {
+
+    // Управление по оси Y
+    if (tiltX > 5 && rect.bottom < window.innerHeight) {
       capybara.style.top = `${rect.top + step}px`;
-    } else if (diffY < 0 && rect.top > 0) {
+    } else if (tiltX < -5 && rect.top > 0) {
       capybara.style.top = `${rect.top - step}px`;
     }
-  }
 
-  touchStartX = touchEndX;
-  touchStartY = touchEndY;
+    checkCollision();
+  });
+} else {
+  // Управление на компьютере через клавиши
+  document.addEventListener('keydown', (e) => {
+    startMusic(); // Включаем музыку
+    const rect = capybara.getBoundingClientRect();
+    const step = 15;
 
-  checkCollision();
-});
+    if (e.key === 'ArrowUp' && rect.top > 0) {
+      capybara.style.top = `${rect.top - step}px`;
+    } else if (e.key === 'ArrowDown' && rect.bottom < window.innerHeight) {
+      capybara.style.top = `${rect.top + step}px`;
+    } else if (e.key === 'ArrowLeft' && rect.left > 0) {
+      capybara.style.left = `${rect.left - step}px`;
+    } else if (e.key === 'ArrowRight' && rect.right < window.innerWidth) {
+      capybara.style.left = `${rect.left + step}px`;
+    }
+
+    checkCollision();
+  });
+}
 
 // Создание яблока
 function createApple() {
