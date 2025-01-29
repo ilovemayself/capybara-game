@@ -80,18 +80,25 @@ function requestMotionPermission() {
 
 function handleMotion(event) {
   const capybaraRect = capybara.getBoundingClientRect();
-  const speed = 8;
+  const baseSpeed = 5; // Основная скорость
+  const xSensitivity = 1.5; // Чувствительность к наклону по горизонтали
+  const ySensitivity = 1.5; // Чувствительность к наклону по вертикали
 
-  let xMovement = event.gamma;
-  let yMovement = event.beta;
+  let xMovement = event.gamma; // Горизонтальное движение
+  let yMovement = event.beta;  // Вертикальное движение
 
-  if (xMovement > 15) capybara.style.left = `${Math.min(window.innerWidth - capybaraRect.width, capybaraRect.left + speed)}px`;
-  if (xMovement < -15) capybara.style.left = `${Math.max(0, capybaraRect.left - speed)}px`;
-  if (yMovement > 15) capybara.style.top = `${Math.min(window.innerHeight - capybaraRect.height, capybaraRect.top + speed)}px`;
-  if (yMovement < -15) capybara.style.top = `${Math.max(0, capybaraRect.top - speed)}px`;
+  // Чем больше наклон устройства, тем быстрее будет двигаться капибара
+  const xSpeed = baseSpeed * (Math.abs(xMovement) > 15 ? xSensitivity : 0);
+  const ySpeed = baseSpeed * (Math.abs(yMovement) > 15 ? ySensitivity : 0);
+
+  if (xMovement > 15) capybara.style.left = `${Math.min(window.innerWidth - capybaraRect.width, capybaraRect.left + xSpeed)}px`;
+  if (xMovement < -15) capybara.style.left = `${Math.max(0, capybaraRect.left - xSpeed)}px`;
+  if (yMovement > 15) capybara.style.top = `${Math.min(window.innerHeight - capybaraRect.height, capybaraRect.top + ySpeed)}px`;
+  if (yMovement < -15) capybara.style.top = `${Math.max(0, capybaraRect.top - ySpeed)}px`;
 
   checkCollision();
 }
+
 
 // Создание яблока
 function createApple() {
