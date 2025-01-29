@@ -22,7 +22,7 @@ function startMusic() {
   themeMusic.play().catch(err => console.error('Audio playback blocked:', err));
 }
 
-// Таймер
+// Таймер игры
 const timer = setInterval(() => {
   if (time > 0) {
     time--;
@@ -39,7 +39,7 @@ capybara.style.left = '200px';
 
 // Управление на клавиатуре
 document.addEventListener('keydown', (e) => {
-  startMusic(); 
+  startMusic();
   const rect = capybara.getBoundingClientRect();
   const step = 15;
 
@@ -56,14 +56,23 @@ document.addEventListener('keydown', (e) => {
   checkCollision();
 });
 
-// Сенсоры для мобильных устройств
+// Мобильное управление
 function initializeMobileControl() {
   if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    document.addEventListener('click', async () => {
+    // Создаем кнопку для запроса разрешения
+    const permissionButton = document.createElement('button');
+    permissionButton.textContent = 'Enable Motion Control';
+    permissionButton.id = 'permission-btn';
+    document.body.appendChild(permissionButton);
+
+    permissionButton.addEventListener('click', async () => {
       try {
         const permission = await DeviceMotionEvent.requestPermission();
         if (permission === 'granted') {
           window.addEventListener('deviceorientation', handleMotion);
+          permissionButton.remove();
+        } else {
+          alert('Motion control permission denied.');
         }
       } catch (e) {
         console.error('Permission request failed:', e);
@@ -89,6 +98,7 @@ function handleMotion(event) {
   checkCollision();
 }
 
+// Создание яблока
 function createApple() {
   if (currentApple) return;
 
@@ -96,7 +106,7 @@ function createApple() {
   const x = Math.random() * (window.innerWidth - 50);
   const y = Math.random() * (window.innerHeight - 50);
 
-  const isGolden = Math.random() < 0.3;
+  const isGolden = Math.random() < 0.2;
 
   apple.id = isGolden ? 'golden-item' : 'item';
   apple.style.left = `${x}px`;
@@ -165,8 +175,10 @@ function increaseBombCount() {
 function endGame() {
   themeMusic.pause();
   gameOverSound.play();
-  alert(`Game Over! Your score: ${score}`);
+
+  // Показ кнопки рестарта с результатом
   restartButton.hidden = false;
+  restartButton.textContent = `Game Over! Score: ${score} - Restart`;
   restartButton.onclick = () => location.reload();
 }
 
