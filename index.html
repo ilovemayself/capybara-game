@@ -1,23 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Capybara Game</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div id="capybara"></div>
-  <div id="score">Score: 0</div>
-  <div id="timer">Time: 60s</div>
-  <div id="game-over-screen" style="display: none;">
-    <p>Game Over!</p>
-    <p id="final-score">Score: 0</p>
-    <button id="restart-button">Restart</button>
-  </div>
-  <audio id="catch-sound" src="sounds/catch.mp3"></audio>
-  <audio id="game-over-sound" src="sounds/game-over.mp3"></audio>
-  <audio id="theme-music" src="sounds/theme.mp3" loop></audio>
-  <script src="game.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capybara Game</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="capybara"></div>
+    <div id="score">Score: 0</div>
+    <div id="timer">Time: 60s</div>
+    <button id="restart-btn" hidden>Restart Game</button>
+    <div id="game-over-message" hidden></div>
+    <audio id="catch-sound" src="sounds/catch.mp3"></audio>
+    <audio id="golden-sound" src="sounds/golden.mp3"></audio>
+    <audio id="game-over-sound" src="sounds/game-over.mp3"></audio>
+    <audio id="theme-music" src="sounds/theme.mp3" loop></audio>
+    <script src="game.js"></script>
+  </body>
 </html>
