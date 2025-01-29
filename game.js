@@ -80,7 +80,7 @@ function requestMotionPermission() {
 
 function handleMotion(event) {
   const capybaraRect = capybara.getBoundingClientRect();
-  const speed = 3;
+  const speed = 4;
 
   let xMovement = event.gamma;
   let yMovement = event.beta;
