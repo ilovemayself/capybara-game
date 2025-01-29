@@ -157,7 +157,7 @@ async function setImageSizes() {
   const bombSize = await getImageSize('images/bomb.png');
 
   // Ограничим максимальные размеры
-  const maxCapybaraSize = 130; // максимальная ширина и высота капибары
+  const maxCapybaraSize = 100; // максимальная ширина и высота капибары
   const scaleCapybara = Math.min(maxCapybaraSize / capybaraSize.width, maxCapybaraSize / capybaraSize.height);
   
   const maxItemSize = 50; // максимальный размер для яблок и бомб
