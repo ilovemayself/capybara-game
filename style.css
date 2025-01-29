@@ -1,8 +1,10 @@
+/* Общие стили */
 body {
   margin: 0;
   overflow: hidden;
   font-family: Arial, sans-serif;
-  background-color: #87ceeb;
+  background-color: #87ceeb; /* Нежно-голубой фон */
+  touch-action: none;
 }
 
 #capybara {
@@ -14,7 +16,7 @@ body {
   background-repeat: no-repeat;
 }
 
-#item, #bomb {
+#item, #golden-item, #bomb {
   position: absolute;
   width: 50px;
   height: 50px;
@@ -26,6 +28,10 @@ body {
   background-image: url('images/apple.png');
 }
 
+#golden-item {
+  background-image: url('images/golden-apple.png');
+}
+
 #bomb {
   background-image: url('images/bomb.png');
 }
@@ -33,6 +39,7 @@ body {
 #score, #timer {
   position: fixed;
   top: 10px;
+  left: 10px;
   font-size: 20px;
   color: white;
   text-shadow: 1px 1px 5px black;
@@ -40,24 +47,82 @@ body {
 }
 
 #timer {
+  left: auto;
   right: 10px;
 }
 
-#game-over-screen {
+#restart-btn {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  text-align: center;
-  background: rgba(0, 0, 0, 0.8);
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #ff6666;
   color: white;
-  padding: 20px;
-  border-radius: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-#restart-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  margin-top: 10px;
+#game-over-message {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 24px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+#restart-btn {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 12px 24px;
+  font-size: 18px;
+  background: linear-gradient(135deg, #f78ca0, #f9748f);
+  color: white;
+  border: none;
+  border-radius: 12px;
   cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+#restart-btn:hover {
+  background: linear-gradient(135deg, #ff9aa2, #ff6b81);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+#restart-btn:active {
+  background: linear-gradient(135deg, #f9748f, #f78ca0);
+  transform: translate(-50%, -50%) scale(0.97);
+}
+#permission-btn {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 14px 24px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+#permission-btn:hover {
+  background-color: #45a049;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
 }
