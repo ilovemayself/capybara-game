@@ -16,13 +16,22 @@ let bombs = [];
 let bombInterval = 10000;
 let bombCreationTimer;
 
-// Включение музыки
+function enableMusicOnInteraction() {
+  const startAudioHandler = () => {
+    themeMusic.play().catch(err => console.error('Audio playback blocked:', err));
+    document.removeEventListener('touchstart', startAudioHandler);
+    document.removeEventListener('click', startAudioHandler);
+  };
+
+  document.addEventListener('touchstart', startAudioHandler);
+  document.addEventListener('click', startAudioHandler);
+}
+
 function startMusic() {
   themeMusic.volume = 0.5;
   themeMusic.play().catch(err => console.error('Audio playback blocked:', err));
 }
 
-// Таймер игры
 const timer = setInterval(() => {
   if (time > 0) {
     time--;
@@ -37,7 +46,6 @@ const timer = setInterval(() => {
 capybara.style.top = '200px';
 capybara.style.left = '200px';
 
-// Управление на клавиатуре
 document.addEventListener('keydown', (e) => {
   startMusic();
   const rect = capybara.getBoundingClientRect();
@@ -56,10 +64,8 @@ document.addEventListener('keydown', (e) => {
   checkCollision();
 });
 
-// Мобильное управление
 function initializeMobileControl() {
   if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-    // Создаем кнопку для запроса разрешения
     const permissionButton = document.createElement('button');
     permissionButton.textContent = 'Enable Motion Control';
     permissionButton.id = 'permission-btn';
@@ -98,7 +104,6 @@ function handleMotion(event) {
   checkCollision();
 }
 
-// Создание яблока
 function createApple() {
   if (currentApple) return;
 
@@ -176,12 +181,12 @@ function endGame() {
   themeMusic.pause();
   gameOverSound.play();
 
-  // Показ кнопки рестарта с результатом
   restartButton.hidden = false;
   restartButton.textContent = `Game Over! Score: ${score} - Restart`;
   restartButton.onclick = () => location.reload();
 }
 
+enableMusicOnInteraction();
 initializeMobileControl();
 scoreDisplay.textContent = `Score: ${score}`;
 timerDisplay.textContent = `Time: ${time}s`;
